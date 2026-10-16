@@ -1,0 +1,9 @@
+# Face Forge - Module 4 Configuration
+# All parameters editable from the Settings page
+
+demo_mode: true
+use_module1: false
+use_module2: false
+use_module3: false
+confidence_threshold: 0.50
+video_sampling_step: 10

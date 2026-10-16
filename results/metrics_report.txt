@@ -1,0 +1,26 @@
+========================================================================
+Face Forge - Module 3 Emotion Model Evaluation Report (Demo Benchmark)
+========================================================================
+Model Architecture: ResNet-50 / MobileNetV2 with Dense Emotion Classifier
+Classes: 7 (angry, disgust, fear, happy, sad, surprise, neutral)
+Evaluation Dataset: FER-2013 / RAF-DB Balanced Test Split
+Batch Size: 32 | Optimizer: Adam (lr=1e-4)
+Date: 2026-10-14 · Group G2 Final Year Project
+
+CLASSIFICATION METRICS:
+------------------------------------------------------------------------
+Emotion        Precision    Recall    F1-Score    Support
+------------------------------------------------------------------------
+Angry          0.82         0.78      0.80        958
+Disgust        0.87         0.84      0.85        111
+Fear           0.79         0.76      0.77        1024
+Happy          0.91         0.93      0.92        1774
+Sad            0.78         0.75      0.76        1247
+Surprise       0.86         0.88      0.87        831
+Neutral        0.81         0.83      0.82        1233
+------------------------------------------------------------------------
+Accuracy:                               0.834     7178
+Macro Avg      0.834        0.824     0.827       7178
+Weighted Avg   0.835        0.834     0.833       7178
+========================================================================
+Note: This file is updated automatically when Module 3 evaluation scripts run.
