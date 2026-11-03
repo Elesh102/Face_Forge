@@ -1,6 +1,9 @@
 """
-Face Forge - Adapter for Module 3: Emotion Classification Model
-File: adapter_emotion.py
+=============================================================================
+FaceForge - Module 3 Adapter: Emotion Model Interface (adapter_emotion.py)
+Contributed by: Member 4 (System Integration & Pipeline Coordination)
+Integrated with: Member 3 (FER Deep Learning Model & Evaluation)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
 CONTRACT (Result Record):
     - face_index: int
@@ -11,17 +14,7 @@ CONTRACT (Result Record):
     - confidence: float (0.0 to 1.0)
     - status: str ("Happy", "Neutral", "Needs attention", "Uncertain")
     - face_found: bool
-
-MOCK BEHAVIOR (TODAY):
-    Generates realistic, normalized probability distributions over the 7 emotion classes
-    that sum to 1.0. Calculates dominant emotion and sets the wellbeing status based on
-    the project specification and confidence threshold.
-
-HOW TO PLUG IN THE REAL MODULE:
-    1. Place teammate's emotion classifier (e.g. `module3_model.py` and weights `.h5`/`.pt`) here.
-    2. Import their inference function in `predict_face()`.
-    3. Ensure their function returns scores for the 7 emotion classes.
-    4. Enable `use_module3: true` in `config.yaml` or through the Settings UI.
+=============================================================================
 """
 
 from typing import Dict, Any, List, Tuple

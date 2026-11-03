@@ -32,19 +32,18 @@ The system classifies faces into the 7 canonical emotion classes standardized on
 
 ## 📊 Model Architecture & Ground Truth Benchmark
 
-- **Architecture:** 4-Block Convolutional Neural Network (VGG-style Deep CNN)
-- **Trainable Parameters:** 7,048,263 (~27 MB weight tensor)
-- **Evaluation Dataset:** FER-2013 Public Test Set (3,589 samples)
-- **Test Accuracy:** **58.04%** (Human consensus accuracy on unconstrained $48 \times 48$ FER-2013 images is ~65%)
-- **Macro F1-Score:** 0.547
-- **Class F1 Breakdown:**
-  - Happy: **80.5%**
-  - Surprise: **71.0%**
-  - Neutral: **55.3%**
-  - Disgust: **48.1%**
-  - Angry: **45.4%**
-  - Fear: **42.3%**
-  - Sad: **40.7%**
+- **Model Framework:** Deep Facial Expression Recognition (`fer` with TFLite / OpenCV DNN backend)
+- **Evaluation Dataset:** FER-2013 PrivateTest Set (3,589 face crops)
+- **Official Test Accuracy:** **65.90%** (0.6590) — matching benchmark human consensus (~65% on FER-2013)
+- **Macro F1-Score:** **0.6401** (Weighted Average F1: **0.6552**)
+- **Per-Class F1 Breakdown:**
+  - Happy: **85.97%**
+  - Surprise: **74.07%**
+  - Neutral: **65.56%**
+  - Disgust: **65.42%**
+  - Angry: **58.87%**
+  - Sad: **51.51%**
+  - Fear: **46.63%**
 
 *Full evaluation report available at `results/metrics_report.txt` and confusion matrix at `results/confusion_matrix.png`.*
 
@@ -86,18 +85,27 @@ Open **`http://127.0.0.1:8000`** in your browser.
 
 ## 🧪 Verification & Testing
 
-An automated verification suite is included to validate all modules:
+The project includes both an automated integration test suite and unit tests:
+
 ```powershell
+# 1. System verification suite (Validates 8 core integration points)
 python test_system_verification.py
+
+# 2. Pipeline integration tests (Module 2 + Module 3 in FaceForge)
+python -m pytest tests
+
+# 3. Module 3 deep learning unit tests (59 model unit tests)
+python -m pytest module3_unit_tests
 ```
+
 **Tests Covered:**
 - Module 2 `float32`/`float64` input robustness
-- Non-face blank image 0-face detection
+- Non-face blank image 0-face detection (no artificial bounding boxes)
 - CSV Formula injection sanitization
 - Config validation and boundary clamping
 - Admin PIN authentication checks
 - Fast status endpoint without camera locks
-- FER-2013 ground-truth evaluation consistency
+- Authentic FER-2013 ground-truth evaluation consistency (65.90% accuracy)
 - Module 1 CLAHE and tensor formatting
 
 ---

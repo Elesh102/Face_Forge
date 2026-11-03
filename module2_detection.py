@@ -1,3 +1,17 @@
+"""
+=============================================================================
+FaceForge - Module 2: Computer Vision Face Detection (module2_detection.py)
+Contributed by: Member 2 (Face Detection & Framing)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+
+Responsibilities of Member 2:
+- Human face detection using OpenCV Haar Cascades
+- Multi-angle face support (Frontal + Profile detection fallback)
+- Safe input sanitization for float32, uint8, and color channel normalization
+- Extraction of face bounding boxes (x, y, w, h) for Module 3 emotion classifier
+=============================================================================
+"""
+
 from typing import List, Tuple
 
 import cv2

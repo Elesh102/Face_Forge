@@ -1,22 +1,15 @@
 """
-Face Forge - Adapter for Module 2: Face Detection & Framing
-File: adapter_face.py
+=============================================================================
+FaceForge - Module 2 Adapter: Face Detection & Framing Interface (adapter_face.py)
+Contributed by: Member 4 (System Integration & Pipeline Coordination)
+Integrated with: Member 2 (Face Detection Engine)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
 CONTRACT:
     - detect_faces(img) -> List of (x, y, w, h) bounding boxes.
     - crop_face(img, box) -> Face crop array (NumPy ndarray).
     - read_video(path, step) -> Generator yielding (frame_number, frame).
-
-MOCK BEHAVIOR (TODAY):
-    - detect_faces returns one fixed, centered box proportional to the frame size.
-    - crop_face returns the sliced region using NumPy.
-    - read_video uses OpenCV cv2.VideoCapture to sample frames every Nth step.
-
-HOW TO PLUG IN THE REAL MODULE:
-    1. Place teammate's face detection file (e.g. `module2_detection.py`) in this project.
-    2. Import their face detector in `detect_faces()`.
-    3. Ensure their detector returns a list of (x, y, w, h) bounding boxes.
-    4. Enable `use_module2: true` in `config.yaml` or through the Settings UI.
+=============================================================================
 """
 
 from typing import List, Tuple, Generator

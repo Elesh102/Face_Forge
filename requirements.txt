@@ -1,13 +1,35 @@
-# Face Forge Dependencies (Python 3.12 Compatible)
+# =============================================================================
+# FaceForge: Multi-Modal Facial Emotion Recognition System
+# Python 3.12 (64-bit) Environment Dependencies
+# Contributed by: Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+# =============================================================================
+
+# Module 4: Web Application, API & Server
 fastapi>=0.100.0
 uvicorn>=0.20.0
 python-multipart>=0.0.6
-flask>=3.0.0
 pyyaml>=6.0
+pillow>=10.0.0
+reportlab>=4.0.0
+
+# Module 1 & Module 4: Data Processing & Analytics
 numpy>=1.24.0
 pandas>=2.0.0
-opencv-python==4.14.0.94
 matplotlib>=3.7.0
-pillow>=10.0.0
-streamlit>=1.30.0
 
+# Module 2: Computer Vision & Face Detection
+# CRITICAL: Keep opencv-contrib-python==4.14.0.94.
+# Do NOT install opencv-python alongside it (breaks cv2 bindings).
+# Do NOT upgrade to OpenCV 5.0 (lacks Haar cascade XML data).
+opencv-contrib-python==4.14.0.94
+
+# Module 3: Emotion Recognition Deep Learning Model (FER-2013)
+# CRITICAL: TensorFlow requires Python 3.12 (no wheel available for Python 3.14+).
+# fer 25.10.3 uses pkg_resources, requiring setuptools < 81.
+setuptools<81
+fer==25.10.3
+tensorflow==2.21.0
+scikit-learn>=1.9.0
+
+# Testing Suite (Integration & Unit Tests)
+pytest>=8.0.0
