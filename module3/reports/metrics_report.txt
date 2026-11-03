@@ -1,0 +1,49 @@
+MODULE 3 - EVALUATION REPORT
+==================================================
+date          : 2026-11-03 12:05
+dataset       : FER-2013 PrivateTest
+source        : F:\datasets\fer2013\private_test
+input mode    : face crops (no face detection)
+model         : {'package': 'fer', 'version': '25.10.3', 'backend': 'tflite', 'face_detector': 'haar'}
+label mapping : none
+
+images        : 3589
+predicted     : 3589
+per class     : angry=491, disgust=55, fear=528, happy=879, sad=594, surprise=416, neutral=626
+
+accuracy (predicted images only) : 0.6590
+accuracy (all images, failures counted wrong) : 0.6590
+
+class        precision  recall      f1  support
+angry           0.5828  0.5947  0.5887      491
+disgust         0.6731  0.6364  0.6542       55
+fear            0.5149  0.4261  0.4663      528
+happy           0.8451  0.8749  0.8597      879
+sad             0.5273  0.5034  0.5151      594
+surprise        0.7363  0.7452  0.7407      416
+neutral         0.6205  0.6949  0.6556      626
+macro avg       0.6429  0.6394  0.6401
+weighted avg    0.6536  0.6590  0.6552
+
+confusion matrix (rows = true, columns = predicted)
+                angry  disgust     fear    happy      sad surprise  neutral
+angry             292        6       50       17       69       10       47
+disgust            13       35        2        2        1        1        1
+fear               67        4      225       28       92       64       48
+happy              20        1       14      769       27       17       31
+sad                69        3       57       32      299        7      127
+surprise           11        1       55       23        4      310       12
+neutral            29        2       34       39       75       12      435
+
+most common mistakes (true -> predicted):
+  sad -> neutral: 127
+  fear -> sad: 92
+  neutral -> sad: 75
+  sad -> angry: 69
+  angry -> sad: 69
+
+notes:
+- macro avg = simple average over these classes: ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
+- weighted avg = average weighted by number of images per class
+- model score is a softmax output, not a real probability
+- these results are only for this dataset

@@ -247,10 +247,10 @@ def generate_dataset_pdf():
     story.append(Spacer(1, 12))
 
     # 5. Model Evaluation Results & Confusion Matrix
-    story.append(Paragraph("5. Ground Truth Evaluation Results (Public Test Split: 3,589 Samples)", h1_style))
+    story.append(Paragraph("5. Ground Truth Evaluation Results (FER-2013 PrivateTest: 3,589 Samples)", h1_style))
     story.append(Paragraph(
-        "Evaluation performed on the 3,589 independent test samples yields an overall classification accuracy of <b>58.04%</b> "
-        "with a macro-averaged F1-score of <b>0.547</b>.",
+        "Evaluation performed on the 3,589 independent test samples yields an overall classification accuracy of <b>65.90%</b> "
+        "with a macro-averaged F1-score of <b>0.6401</b>.",
         body_style
     ))
     story.append(Spacer(1, 6))
@@ -263,16 +263,16 @@ def generate_dataset_pdf():
             Paragraph("F1-Score", table_header_style),
             Paragraph("Test Support", table_header_style)
         ],
-        [Paragraph("Angry", table_body_style), Paragraph("0.513", table_body_style), Paragraph("0.407", table_body_style), Paragraph("0.454", table_body_style), Paragraph("491", table_body_style)],
-        [Paragraph("Disgust", table_body_style), Paragraph("0.410", table_body_style), Paragraph("0.582", table_body_style), Paragraph("0.481", table_body_style), Paragraph("55", table_body_style)],
-        [Paragraph("Fear", table_body_style), Paragraph("0.453", table_body_style), Paragraph("0.396", table_body_style), Paragraph("0.423", table_body_style), Paragraph("528", table_body_style)],
-        [Paragraph("Happy", table_body_style), Paragraph("0.823", table_body_style), Paragraph("0.787", table_body_style), Paragraph("<b>0.805</b>", table_body_style), Paragraph("879", table_body_style)],
-        [Paragraph("Sad", table_body_style), Paragraph("0.462", table_body_style), Paragraph("0.364", table_body_style), Paragraph("0.407", table_body_style), Paragraph("594", table_body_style)],
-        [Paragraph("Surprise", table_body_style), Paragraph("0.644", table_body_style), Paragraph("0.791", table_body_style), Paragraph("<b>0.710</b>", table_body_style), Paragraph("416", table_body_style)],
-        [Paragraph("Neutral", table_body_style), Paragraph("0.482", table_body_style), Paragraph("0.647", table_body_style), Paragraph("0.553", table_body_style), Paragraph("626", table_body_style)],
-        [Paragraph("<b>Accuracy / Total</b>", table_body_style), Paragraph("<b>0.5804</b>", table_body_style), Paragraph("<b>0.5804</b>", table_body_style), Paragraph("<b>0.5804</b>", table_body_style), Paragraph("<b>3,589</b>", table_body_style)],
-        [Paragraph("<b>Macro Average</b>", table_body_style), Paragraph("0.541", table_body_style), Paragraph("0.568", table_body_style), Paragraph("0.547", table_body_style), Paragraph("3,589", table_body_style)],
-        [Paragraph("<b>Weighted Average</b>", table_body_style), Paragraph("0.580", table_body_style), Paragraph("0.580", table_body_style), Paragraph("0.575", table_body_style), Paragraph("3,589", table_body_style)]
+        [Paragraph("Angry", table_body_style), Paragraph("0.5828", table_body_style), Paragraph("0.5947", table_body_style), Paragraph("0.5887", table_body_style), Paragraph("491", table_body_style)],
+        [Paragraph("Disgust", table_body_style), Paragraph("0.6731", table_body_style), Paragraph("0.6364", table_body_style), Paragraph("0.6542", table_body_style), Paragraph("55", table_body_style)],
+        [Paragraph("Fear", table_body_style), Paragraph("0.5149", table_body_style), Paragraph("0.4261", table_body_style), Paragraph("0.4663", table_body_style), Paragraph("528", table_body_style)],
+        [Paragraph("Happy", table_body_style), Paragraph("0.8451", table_body_style), Paragraph("0.8749", table_body_style), Paragraph("<b>0.8597</b>", table_body_style), Paragraph("879", table_body_style)],
+        [Paragraph("Sad", table_body_style), Paragraph("0.5273", table_body_style), Paragraph("0.5034", table_body_style), Paragraph("0.5151", table_body_style), Paragraph("594", table_body_style)],
+        [Paragraph("Surprise", table_body_style), Paragraph("0.7363", table_body_style), Paragraph("0.7452", table_body_style), Paragraph("<b>0.7407</b>", table_body_style), Paragraph("416", table_body_style)],
+        [Paragraph("Neutral", table_body_style), Paragraph("0.6205", table_body_style), Paragraph("0.6949", table_body_style), Paragraph("0.6556", table_body_style), Paragraph("626", table_body_style)],
+        [Paragraph("<b>Accuracy / Total</b>", table_body_style), Paragraph("<b>0.6590</b>", table_body_style), Paragraph("<b>0.6590</b>", table_body_style), Paragraph("<b>0.6590</b>", table_body_style), Paragraph("<b>3,589</b>", table_body_style)],
+        [Paragraph("<b>Macro Average</b>", table_body_style), Paragraph("0.6429", table_body_style), Paragraph("0.6394", table_body_style), Paragraph("0.6401", table_body_style), Paragraph("3,589", table_body_style)],
+        [Paragraph("<b>Weighted Average</b>", table_body_style), Paragraph("0.6536", table_body_style), Paragraph("0.6590", table_body_style), Paragraph("0.6552", table_body_style), Paragraph("3,589", table_body_style)]
     ]
     eval_table = Table(eval_data, colWidths=[90, 80, 80, 80, 90])
     eval_table.setStyle(TableStyle([

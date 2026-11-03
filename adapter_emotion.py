@@ -1,14 +1,27 @@
 """
-=============================================================================
-FaceForge - Adapter for Module 3: Emotion Classification Model
+Face Forge - Adapter for Module 3: Emotion Classification Model
 File: adapter_emotion.py
-Coordinated by: Member 4 (Integration) for Member 3 (Emotion Model)
-Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
-Purpose:
-Connects Member 3's deep learning model (module3_model.py) with the
-FaceForge controller, computes confidence, and derives ethical status.
-=============================================================================
+CONTRACT (Result Record):
+    - face_index: int
+    - box: (x, y, w, h)
+    - scores: dict of 7 floats: {"angry": float, "disgust": float, "fear": float,
+                                 "happy": float, "sad": float, "surprise": float, "neutral": float}
+    - emotion: str (dominant emotion with highest score)
+    - confidence: float (0.0 to 1.0)
+    - status: str ("Happy", "Neutral", "Needs attention", "Uncertain")
+    - face_found: bool
+
+MOCK BEHAVIOR (TODAY):
+    Generates realistic, normalized probability distributions over the 7 emotion classes
+    that sum to 1.0. Calculates dominant emotion and sets the wellbeing status based on
+    the project specification and confidence threshold.
+
+HOW TO PLUG IN THE REAL MODULE:
+    1. Place teammate's emotion classifier (e.g. `module3_model.py` and weights `.h5`/`.pt`) here.
+    2. Import their inference function in `predict_face()`.
+    3. Ensure their function returns scores for the 7 emotion classes.
+    4. Enable `use_module3: true` in `config.yaml` or through the Settings UI.
 """
 
 from typing import Dict, Any, List, Tuple
@@ -59,24 +72,34 @@ def predict_face(
         }
 
     if use_real:
+        # Module 3: pretrained FER model (module3/module3_model.py)
         try:
-            # Member 3 (Trained Emotion Recognition Model) Live Integration
-            from module3_model import run_inference
-            scores = run_inference(face_img)
-            dominant_emo = max(scores, key=scores.get)
-            confidence = float(scores[dominant_emo])
-            status = derive_status(dominant_emo, confidence, confidence_threshold)
-            return {
-                "face_index": face_index,
-                "box": list(box),
-                "scores": scores,
-                "emotion": dominant_emo,
-                "confidence": round(confidence, 4),
-                "status": status,
-                "face_found": True
-            }
+            from module3.module3_model import predict_emotion
+            scores = predict_emotion(face_img)
         except Exception as e:
-            print(f"[Warning] Module 3 Emotion Model unavailable: {e}. Falling back to simulated predictions.")
+            # Live mode: report the failure, never show random emotions
+            print(f"[Warning] Module 3 Emotion Model failed: {e}")
+            return {
+                "face_index": int(face_index),
+                "box": [int(v) for v in box],
+                "scores": {emo: 0.0 for emo in EMOTION_CLASSES},
+                "emotion": "unknown",
+                "confidence": 0.0,
+                "status": "Uncertain",
+                "face_found": False,
+                "error": str(e)
+            }
+        dominant_emo = max(scores, key=scores.get)
+        confidence = float(scores[dominant_emo])
+        return {
+            "face_index": int(face_index),
+            "box": [int(v) for v in box],
+            "scores": scores,
+            "emotion": dominant_emo,
+            "confidence": confidence,
+            "status": derive_status(dominant_emo, confidence, confidence_threshold),
+            "face_found": True
+        }
 
     # Mock behavior: pick a dominant emotion and generate softmax-like scores
     dominant = random.choice(EMOTION_CLASSES)

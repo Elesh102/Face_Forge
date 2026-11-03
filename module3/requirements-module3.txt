@@ -1,0 +1,25 @@
+# Module 3 (FER emotion recognition) - Python 3.12 (64-bit, Windows)
+# TensorFlow has NO wheel for Python 3.14, so 3.14 will not work.
+#
+# Install:
+#   py -3.12 -m venv F:\venvs\emotion-m3
+#   F:\venvs\emotion-m3\Scripts\python.exe -m pip install -r module3\requirements-module3.txt
+#
+# Exact versions of every package (verified working) are in requirements-module3.lock.txt
+
+fer==25.10.3
+tensorflow==2.21.0
+
+# fer 25.10.3 does `import pkg_resources`, which was removed in setuptools 81+.
+setuptools<81
+
+# OpenCV 5.0 does not ship cv2.data haarcascades, so fer's default face detector fails.
+# Stay on OpenCV 4.x (also what most team tutorials use).
+opencv-contrib-python==4.14.0.94
+
+# Tests (tests/test_emotion_detector.py)
+pytest==9.1.1
+
+# Evaluation (evaluation.py)
+scikit-learn==1.9.1
+matplotlib==3.11.2

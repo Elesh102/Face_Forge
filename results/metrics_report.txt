@@ -1,38 +1,49 @@
-========================================================================
-Face Forge - Module 3 Emotion Model Evaluation Report (FER-2013 Ground Truth)
-========================================================================
-Architecture: 4-Block Deep Convolutional Neural Network (VGG-style CNN)
-Framework: Keras / OpenCV DNN Backend
-Trained On: FER-2013 Training Split (28,709 images, 48x48 Grayscale)
-Evaluation Dataset: FER-2013 Public Test Set (3,589 images)
-Loss Function: Categorical Cross-Entropy
-Batch Size: 32 | Optimizer: SGD (Initial LR: 0.01 with EarlyStopping & ReduceLROnPlateau)
-Date: 2026-11-03 · Group G2 (IT) B.Tech Final Year Project · SKIT Jaipur
+MODULE 3 - EVALUATION REPORT
+==================================================
+date          : 2026-11-03 12:05
+dataset       : FER-2013 PrivateTest
+source        : F:\datasets\fer2013\private_test
+input mode    : face crops (no face detection)
+model         : {'package': 'fer', 'version': '25.10.3', 'backend': 'tflite', 'face_detector': 'haar'}
+label mapping : none
 
-CLASSIFICATION REPORT (TEST SPLIT):
-------------------------------------------------------------------------
-Emotion        Precision    Recall    F1-Score    Support
-------------------------------------------------------------------------
-Angry          0.513        0.407     0.454       491
-Disgust        0.410        0.582     0.481       55
-Fear           0.453        0.396     0.423       528
-Happy          0.823        0.787     0.805       879
-Sad            0.462        0.364     0.407       594
-Surprise       0.644        0.791     0.710       416
-Neutral        0.482        0.647     0.553       626
-------------------------------------------------------------------------
-Test Accuracy:                          0.5804    3589
-Macro Avg:     0.541        0.568     0.547       3589
-Weighted Avg:  0.580        0.580     0.575       3589
-========================================================================
-TRAIN / VALIDATION CONVERGENCE:
-- Training Accuracy:   97.88% (Loss: 0.0632)
-- Validation Accuracy: 58.18% (Loss: 2.5994)
-- Test Accuracy:       58.04% (Loss: 2.5071)
+images        : 3589
+predicted     : 3589
+per class     : angry=491, disgust=55, fear=528, happy=879, sad=594, surprise=416, neutral=626
 
-VIVA DEFENSE JUSTIFICATION:
-- Human benchmark on FER-2013 is ~65% due to 48x48 pixel resolution, low contrast,
-  and inherent label ambiguity in wild unconstrained facial expressions.
-- The 4-Block CNN achieves a solid 58.04% test accuracy (Happy: 80.5% F1, Surprise: 71.0% F1).
-- Disgust has limited support (55 samples) reflecting natural class imbalance in FER-2013.
-========================================================================
+accuracy (predicted images only) : 0.6590
+accuracy (all images, failures counted wrong) : 0.6590
+
+class        precision  recall      f1  support
+angry           0.5828  0.5947  0.5887      491
+disgust         0.6731  0.6364  0.6542       55
+fear            0.5149  0.4261  0.4663      528
+happy           0.8451  0.8749  0.8597      879
+sad             0.5273  0.5034  0.5151      594
+surprise        0.7363  0.7452  0.7407      416
+neutral         0.6205  0.6949  0.6556      626
+macro avg       0.6429  0.6394  0.6401
+weighted avg    0.6536  0.6590  0.6552
+
+confusion matrix (rows = true, columns = predicted)
+                angry  disgust     fear    happy      sad surprise  neutral
+angry             292        6       50       17       69       10       47
+disgust            13       35        2        2        1        1        1
+fear               67        4      225       28       92       64       48
+happy              20        1       14      769       27       17       31
+sad                69        3       57       32      299        7      127
+surprise           11        1       55       23        4      310       12
+neutral            29        2       34       39       75       12      435
+
+most common mistakes (true -> predicted):
+  sad -> neutral: 127
+  fear -> sad: 92
+  neutral -> sad: 75
+  sad -> angry: 69
+  angry -> sad: 69
+
+notes:
+- macro avg = simple average over these classes: ['angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral']
+- weighted avg = average weighted by number of images per class
+- model score is a softmax output, not a real probability
+- these results are only for this dataset

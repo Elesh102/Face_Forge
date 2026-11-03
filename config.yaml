@@ -1,7 +1,6 @@
-camera_index: 0
 confidence_threshold: 0.5
 demo_mode: true
-use_module1: true
+use_module1: false
 use_module2: true
 use_module3: true
 video_sampling_step: 1

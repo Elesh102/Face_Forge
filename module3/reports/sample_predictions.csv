@@ -1,0 +1,2 @@
+image,face_index,status,error,box,dominant_emotion,score,angry,disgust,fear,happy,sad,surprise,neutral,time_ms
+astronaut_nasa.png,0,ok,,177 66 95 95,happy,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,27.2
