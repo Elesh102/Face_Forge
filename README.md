@@ -11,7 +11,7 @@ The project is structured into four decoupled, adapter-integrated modules:
 | Module | Member Responsibility | Core Files | Description |
 | :--- | :--- | :--- | :--- |
 | **Module 1** | **Dataset & Preprocessing** | `module1_preprocess.py`, `adapter_preprocess.py` | FER-2013 data pipeline, CLAHE lighting contrast enhancement, $(48 \times 48 \times 1)$ tensor formatting. |
-| **Module 2** | **Computer Vision & Face Detection** | `module2_detection.py`, `adapter_face.py`, `models/` | OpenCV Haar Cascade (Frontal + Profile multi-angle detection), safe `float32`/`uint8` handling, texture false-positive rejection. |
+| **Module 2** | **Computer Vision & Face Detection** | `module2_detection.py`, `adapter_face.py`, `models/face_detection_yunet_2023mar.onnx` | OpenCV YuNet Deep Neural Network face detector, multi-pose detection (frontal, profile, upward, downward), safe `float32`/`uint8` handling, thread-safe concurrent inference. |
 | **Module 3** | **Emotion Classification Model** | `module3_model.py`, `adapter_emotion.py`, `emotion_model.onnx` | 4-Block Deep CNN with OpenCV DNN inference engine classifying 7 canonical emotions with softmax probability distributions. |
 | **Module 4** | **System Integration, UI, Storage & Analytics** | `app.py`, `controller.py`, `storage.py`, `analytics.py`, `frontend/` | FastAPI REST gateway, React single-page dashboard, append-only CSV persistence with formula injection defense, Admin PIN protection. |
 
