@@ -1,6 +1,15 @@
 """
-Face Forge - Module 4 Analytics Engine (analytics.py)
-Computes summary statistics, emotion distributions, timeline trends, and chart data.
+=============================================================================
+FaceForge - Module 4: Analytics Engine (analytics.py)
+Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+
+Responsibilities of Member 4:
+- Computes emotion distribution counts and percentages from results.csv
+- Calculates average model confidence across emotions
+- Aggregates timeline trends and identifies most frequent expression
+- Provides formatted analytics data for React charts (Recharts)
+=============================================================================
 """
 
 from typing import Dict, Any, List, Optional

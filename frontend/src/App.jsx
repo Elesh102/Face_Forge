@@ -10,20 +10,27 @@ import SettingsView from './components/SettingsView';
 import EvaluationView from './components/EvaluationView';
 import { Sparkles, Info, X } from 'lucide-react';
 
-/* =========================================================================
- * 🔌 TEAMMATE FEATURE INTEGRATION SLOT (Root Application Controller)
- * Global state hooks, real-time WebSocket connections, and teammate
- * inference telemetry can be synchronized at this root level.
- * ========================================================================= */
+/**
+ * =============================================================================
+ * FaceForge - Module 4: React Application Root Controller (App.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ *
+ * Responsibilities of Member 4:
+ * - Manages active navigation views (Home, Image, Video, Webcam, Results, Analytics, Evaluation, Settings)
+ * - Coordinates configuration state with backend (/api/config)
+ * - Global system status monitoring and user notifications
+ * =============================================================================
+ */
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
   const [config, setConfig] = useState(null);
   const [statusData, setStatusData] = useState(null);
-  const [badge, setBadge] = useState({ text: 'Neural Engine Online', type: 'live', desc: 'Vision pipeline active' });
+  const [badge, setBadge] = useState({ text: 'Ready', type: 'live', desc: 'Module 4 pipeline ready' });
   const [resultsRefreshTick, setResultsRefreshTick] = useState(0);
 
-  // Global High-Tech Cyber Toast Alert State
+  // Notification toast state
   const [toast, setToast] = useState(null);
 
   const triggerToast = (title, message) => {
@@ -149,13 +156,13 @@ export default function App() {
         )}
       </main>
 
-      {/* High-Tech Cyber Toast Alert System */}
+      {/* Feedback Toast Notification */}
       {toast && (
         <div className="toast-container">
           <div className="toast">
             <Sparkles size={20} color="#06b6d4" style={{ flexShrink: 0 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 700, fontSize: '0.88rem', color: '#fff', marginBottom: '2px' }}>
+              <div style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--text-primary)', marginBottom: '2px' }}>
                 {toast.title}
               </div>
               <div style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.4' }}>

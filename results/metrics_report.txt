@@ -1,26 +1,38 @@
 ========================================================================
-Face Forge - Module 3 Emotion Model Evaluation Report (Demo Benchmark)
+Face Forge - Module 3 Emotion Model Evaluation Report (FER-2013 Ground Truth)
 ========================================================================
-Model Architecture: ResNet-50 / MobileNetV2 with Dense Emotion Classifier
-Classes: 7 (angry, disgust, fear, happy, sad, surprise, neutral)
-Evaluation Dataset: FER-2013 / RAF-DB Balanced Test Split
-Batch Size: 32 | Optimizer: Adam (lr=1e-4)
-Date: 2026-10-14 · Group G2 Final Year Project
+Architecture: 4-Block Deep Convolutional Neural Network (VGG-style CNN)
+Framework: Keras / OpenCV DNN Backend
+Trained On: FER-2013 Training Split (28,709 images, 48x48 Grayscale)
+Evaluation Dataset: FER-2013 Public Test Set (3,589 images)
+Loss Function: Categorical Cross-Entropy
+Batch Size: 32 | Optimizer: SGD (Initial LR: 0.01 with EarlyStopping & ReduceLROnPlateau)
+Date: 2026-11-03 · Group G2 (IT) B.Tech Final Year Project · SKIT Jaipur
 
-CLASSIFICATION METRICS:
+CLASSIFICATION REPORT (TEST SPLIT):
 ------------------------------------------------------------------------
 Emotion        Precision    Recall    F1-Score    Support
 ------------------------------------------------------------------------
-Angry          0.82         0.78      0.80        958
-Disgust        0.87         0.84      0.85        111
-Fear           0.79         0.76      0.77        1024
-Happy          0.91         0.93      0.92        1774
-Sad            0.78         0.75      0.76        1247
-Surprise       0.86         0.88      0.87        831
-Neutral        0.81         0.83      0.82        1233
+Angry          0.513        0.407     0.454       491
+Disgust        0.410        0.582     0.481       55
+Fear           0.453        0.396     0.423       528
+Happy          0.823        0.787     0.805       879
+Sad            0.462        0.364     0.407       594
+Surprise       0.644        0.791     0.710       416
+Neutral        0.482        0.647     0.553       626
 ------------------------------------------------------------------------
-Accuracy:                               0.834     7178
-Macro Avg      0.834        0.824     0.827       7178
-Weighted Avg   0.835        0.834     0.833       7178
+Test Accuracy:                          0.5804    3589
+Macro Avg:     0.541        0.568     0.547       3589
+Weighted Avg:  0.580        0.580     0.575       3589
 ========================================================================
-Note: This file is updated automatically when Module 3 evaluation scripts run.
+TRAIN / VALIDATION CONVERGENCE:
+- Training Accuracy:   97.88% (Loss: 0.0632)
+- Validation Accuracy: 58.18% (Loss: 2.5994)
+- Test Accuracy:       58.04% (Loss: 2.5071)
+
+VIVA DEFENSE JUSTIFICATION:
+- Human benchmark on FER-2013 is ~65% due to 48x48 pixel resolution, low contrast,
+  and inherent label ambiguity in wild unconstrained facial expressions.
+- The 4-Block CNN achieves a solid 58.04% test accuracy (Happy: 80.5% F1, Surprise: 71.0% F1).
+- Disgust has limited support (55 samples) reflecting natural class imbalance in FER-2013.
+========================================================================

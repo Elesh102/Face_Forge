@@ -1,7 +1,16 @@
 """
-Face Forge - Module 4 Storage Layer (storage.py)
-Handles append-only persistence of emotion detection results to CSV.
-Ensures data integrity even if the application terminates mid-stream.
+=============================================================================
+FaceForge - Module 4: Data Storage Layer (storage.py)
+Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+
+Responsibilities of Member 4:
+- Append-only persistence of emotion detection results into results.csv
+- Immediate disk sync (os.fsync) to guarantee crash safety
+- CSV Formula Injection defense (sanitizing =, +, -, @ prefixes)
+- Pandas DataFrame loading with type enforcement for Analytics
+- Admin PIN-authenticated data reset
+=============================================================================
 """
 
 import os
@@ -25,6 +34,16 @@ CSV_COLUMNS = [
     "data_source"
 ]
 
+def sanitize_csv_field(val: Any) -> Any:
+    """
+    Prevents CSV / Excel Formula Injection (DDE injection).
+    Prepends a single quote if string begins with =, +, -, @, tab, or newline.
+    """
+    if isinstance(val, str) and len(val) > 0:
+        if val[0] in ("=", "+", "-", "@", "\t", "\r"):
+            return "'" + val
+    return val
+
 def init_storage() -> None:
     """Ensure results directory and results.csv exist with header."""
     os.makedirs(RESULTS_DIR, exist_ok=True)
@@ -47,21 +66,28 @@ def save_result(
     """
     Appends one result record to results.csv with immediate disk flush.
     Ensures that a crash never corrupts previously recorded rows.
+    All string inputs are sanitized against formula injection.
     """
     init_storage()
     if timestamp is None:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    clean_source = sanitize_csv_field(str(source))
+    clean_file_name = sanitize_csv_field(str(file_name))
+    clean_emotion = sanitize_csv_field(str(emotion).lower())
+    clean_status = sanitize_csv_field(str(status))
+    clean_data_source = sanitize_csv_field(str(data_source).lower())
+
     row = [
         timestamp,
-        source,
-        file_name,
+        clean_source,
+        clean_file_name,
         int(frame_number),
         int(face_id),
-        str(emotion).lower(),
+        clean_emotion,
         round(float(confidence), 4),
-        str(status),
-        str(data_source).lower()
+        clean_status,
+        clean_data_source
     ]
 
     with open(RESULTS_CSV, mode="a", newline="", encoding="utf-8") as f:

@@ -1,22 +1,14 @@
 """
-Face Forge - Adapter for Module 2: Face Detection & Framing
+=============================================================================
+FaceForge - Adapter for Module 2: Face Detection & Framing
 File: adapter_face.py
+Coordinated by: Member 4 (Integration) for Member 2 (Face Detection)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
-CONTRACT:
-    - detect_faces(img) -> List of (x, y, w, h) bounding boxes.
-    - crop_face(img, box) -> Face crop array (NumPy ndarray).
-    - read_video(path, step) -> Generator yielding (frame_number, frame).
-
-MOCK BEHAVIOR (TODAY):
-    - detect_faces returns one fixed, centered box proportional to the frame size.
-    - crop_face returns the sliced region using NumPy.
-    - read_video uses OpenCV cv2.VideoCapture to sample frames every Nth step.
-
-HOW TO PLUG IN THE REAL MODULE:
-    1. Place teammate's face detection file (e.g. `module2_detection.py`) in this project.
-    2. Import their face detector in `detect_faces()`.
-    3. Ensure their detector returns a list of (x, y, w, h) bounding boxes.
-    4. Enable `use_module2: true` in `config.yaml` or through the Settings UI.
+Purpose:
+Connects Member 2's face detector (module2_detection.py) with the
+FaceForge controller, handles face cropping, and samples video frames.
+=============================================================================
 """
 
 from typing import List, Tuple, Generator
@@ -45,24 +37,18 @@ def detect_faces(
 
     if use_real:
         try:
-            # Teammate plug-in point:
-            # from module2_detection import find_faces
-            # boxes = find_faces(img)
-            # return boxes
-            
-            # Optional fallback attempt using OpenCV's built-in Haar Cascade if teammate provided none:
-            cascade_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-            if os.path.exists(cascade_path):
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                face_cascade = cv2.CascadeClassifier(cascade_path)
-                faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=4, minSize=(30, 30))
-                if len(faces) > 0:
-                    return [(int(x), int(y), int(bw), int(bh)) for (x, y, bw, bh) in faces]
-            raise NotImplementedError("Module 2 face detection model file not provided.")
+            # Member 2 (Computer Vision & Face Detection) Live Integration
+            from module2_detection import find_faces
+            return find_faces(img)
         except Exception as e:
-            print(f"[Warning] Module 2 Face Detection unavailable: {e}. Falling back to mock centered box.")
+            print(f"[Warning] Module 2 Face Detection error: {e}")
+            return []
 
-    # Mock behavior: return a realistic centered box covering ~45% of image center
+    # Mock behavior (used ONLY when use_module2 is explicitly turned off)
+    # If image is blank/solid color (low variance), return no faces
+    if np.std(img) < 8.0:
+        return []
+
     box_w = max(40, int(w * 0.45))
     box_h = max(40, int(h * 0.50))
     x = max(0, int((w - box_w) / 2))

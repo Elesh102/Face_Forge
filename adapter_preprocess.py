@@ -1,19 +1,14 @@
 """
-Face Forge - Adapter for Module 1: Preprocessing & Data Pipeline
+=============================================================================
+FaceForge - Adapter for Module 1: Preprocessing & Data Pipeline
 File: adapter_preprocess.py
+Coordinated by: Member 4 (Integration) for Member 1 (Preprocessing)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
-CONTRACT:
-    Input:  img (NumPy ndarray, BGR format from OpenCV)
-    Output: img (NumPy ndarray, BGR format, preprocessed/normalized)
-
-MOCK BEHAVIOR (TODAY):
-    Returns the image unchanged without modification.
-
-HOW TO PLUG IN THE REAL MODULE:
-    1. Place teammate's module file (e.g. `module1_preprocess.py`) in this directory.
-    2. Import their function inside `preprocess()` below.
-    3. Pass `img` to their function, convert their return value to BGR ndarray if needed.
-    4. Enable `use_module1: true` in `config.yaml` or through the Settings UI.
+Purpose:
+Connects Member 1's preprocessing functions (module1_preprocess.py)
+to the main FaceForge processing pipeline cleanly.
+=============================================================================
 """
 
 import numpy as np
@@ -31,12 +26,11 @@ def preprocess(img: np.ndarray, use_real: bool = False) -> np.ndarray:
     """
     if use_real:
         try:
-            # Teammate plug-in point:
-            # from module1_preprocess import preprocess_image
-            # return preprocess_image(img)
-            raise NotImplementedError("Module 1 implementation not yet supplied by teammate.")
+            # Member 1 (Dataset & Preprocessing) Live Integration
+            from module1_preprocess import preprocess_image
+            return preprocess_image(img)
         except Exception as e:
-            print(f"[Warning] Module 1 Preprocessing unavailable: {e}. Falling back to mock (unchanged).")
+            print(f"[Warning] Module 1 Preprocessing unavailable: {e}. Falling back to unchanged frame.")
             return img
 
     # Mock behavior: return image unchanged

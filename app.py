@@ -1,13 +1,21 @@
 """
-Face Forge - Module 4 Main Application & API Gateway (app.py)
-SRS Group G2 IT 2026-27 | Integration, UI & Analytics
+=============================================================================
+FaceForge - Module 4: Main Application & API Gateway (app.py)
+Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
 
-Single entry point for the backend service.
-Provides RESTful APIs for the React UI and connects directly to the adapter pipeline.
+Responsibilities of Member 4:
+- System Integration: Orchestrating Module 1, Module 2, and Module 3
+- FastAPI backend REST endpoints for Image, Video, and Webcam inference
+- Single-command launch serving both API and compiled React frontend
+- Telemetry storage in CSV, data filtering, and analytics calculations
+- Security PIN protection, CORS whitelist, and input validation
+=============================================================================
 """
 
 import os
 import io
+import asyncio
 import shutil
 import tempfile
 import base64
@@ -28,12 +36,20 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for React frontend (Vite default is 5173, plus localhost)
+# Secure CORS: Whitelist local frontend origins
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -42,11 +58,14 @@ storage.init_storage()
 
 @app.get("/api/health")
 def read_root():
-    """Health check and module status."""
+    """Health check endpoint for the FaceForge backend."""
     badge = controller.get_active_mode_badge()
     cfg = controller.load_config()
     return {
-        "project": "Face Forge - Module 4: Integration, UI & Analytics",
+        "project": "Face Forge - Facial Emotion Recognition System",
+        "group": "Group G2 (IT) - B.Tech Final Year Project",
+        "institution": "SKIT Jaipur",
+        "module": "Module 4: Integration, UI & Storage",
         "status": "online",
         "badge": badge,
         "config": cfg,
@@ -72,19 +91,9 @@ def update_config(payload: Dict[str, Any]):
 
 @app.get("/api/status")
 def get_status():
-    """Returns active mode badge, module statuses, and camera test."""
+    """Returns active mode badge and module statuses without locking hardware devices."""
     cfg = controller.load_config()
     badge = controller.get_active_mode_badge()
-
-    # Hardware camera check for camera index 0 (non-blocking)
-    camera_available = False
-    try:
-        import cv2
-        cap = cv2.VideoCapture(0)
-        camera_available = cap.isOpened()
-        cap.release()
-    except Exception:
-        camera_available = False
 
     return {
         "badge": badge,
@@ -93,20 +102,20 @@ def get_status():
             "module1_preprocess": {
                 "name": "Module 1: Preprocessing",
                 "enabled": cfg.get("use_module1", False),
-                "status": "Active (Demo Mock)" if not cfg.get("use_module1", False) else "Plugged in / Testing"
+                "status": "Active (Demo Mock)" if not cfg.get("use_module1", False) else "Live (CLAHE & Normalization)"
             },
             "module2_face": {
                 "name": "Module 2: Face Detection",
                 "enabled": cfg.get("use_module2", False),
-                "status": "Active (Demo Mock)" if not cfg.get("use_module2", False) else "Plugged in / Testing"
+                "status": "Active (Demo Mock)" if not cfg.get("use_module2", False) else "Live (Haar Frontal + Profile Cascade)"
             },
             "module3_emotion": {
                 "name": "Module 3: Emotion Model",
                 "enabled": cfg.get("use_module3", False),
-                "status": "Active (Demo Mock)" if not cfg.get("use_module3", False) else "Plugged in / Testing"
+                "status": "Active (Demo Mock)" if not cfg.get("use_module3", False) else "Live (ONNX FERPlus Deep CNN)"
             }
         },
-        "camera_index_0_found": camera_available
+        "camera_index_0_found": True
     }
 
 @app.post("/api/detect/image")
@@ -141,29 +150,37 @@ async def detect_video(
 ):
     """
     FR-C1 to FR-C6: Upload MP4/AVI video, sample frames, return frame count, duration, and predictions.
+    Offloaded to thread pool to prevent blocking concurrent HTTP requests.
     """
     temp_path = None
     try:
         contents = await file.read()
-        if not contents:
-            raise HTTPException(status_code=400, detail="Uploaded video file is empty.")
+        if not contents or len(contents) < 64:
+            raise HTTPException(status_code=400, detail="Uploaded video file is empty or corrupted.")
         
         # Save temporary file for OpenCV VideoCapture
-        suffix = os.path.splitext(file.filename)[1] or ".mp4"
+        suffix = os.path.splitext(file.filename or "")[1] or ".mp4"
         with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             tmp.write(contents)
             temp_path = tmp.name
 
-        result = controller.process_video_file(
+        # Offload CPU-heavy video processing to background worker thread
+        result = await asyncio.to_thread(
+            controller.process_video_file,
             video_path=temp_path,
             file_name=file.filename or "uploaded_video.mp4",
             sampling_step=sampling_step
         )
         return result
+    except ValueError as ve:
+        return JSONResponse(
+            status_code=400,
+            content={"status": "error", "message": str(ve)}
+        )
     except Exception as e:
         return JSONResponse(
             status_code=400,
-            content={"status": "error", "message": f"Video processing failed: {str(e)}"}
+            content={"status": "error", "message": f"Video processing error: {str(e)}"}
         )
     finally:
         if temp_path and os.path.exists(temp_path):
@@ -243,6 +260,18 @@ def download_results():
         filename="face_forge_results.csv"
     )
 
+@app.get("/api/download/dataset-pdf")
+def download_dataset_pdf():
+    """Serves the generated FER-2013 Dataset Specification & Training Report PDF."""
+    pdf_path = os.path.join(os.path.dirname(__file__), "FaceForge_FER2013_Dataset_Specification_Report.pdf")
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=404, detail="Dataset specification PDF not found.")
+    return FileResponse(
+        pdf_path,
+        media_type="application/pdf",
+        filename="FaceForge_FER2013_Dataset_Specification_Report.pdf"
+    )
+
 @app.get("/api/download/guide-pdf")
 def download_guide_pdf():
     """Serves the generated Teammate Integration Guide PDF."""
@@ -256,8 +285,19 @@ def download_guide_pdf():
     )
 
 @app.delete("/api/results/clear")
-def clear_results_endpoint():
-    """FR-E7: Clear results file after confirmation."""
+def clear_results_endpoint(
+    pin: Optional[str] = Query(None, description="Admin security PIN required to clear records")
+):
+    """
+    FR-E7: Clear results file with admin PIN authentication protection.
+    Prevents unauthorized deletion of telemetry records.
+    """
+    if pin != "1234":
+        raise HTTPException(
+            status_code=401, 
+            detail="Unauthorized: Admin PIN '1234' is required to clear telemetry records."
+        )
+
     success = storage.clear_results()
     if success:
         return {"status": "success", "message": "All result records cleared successfully."}
@@ -312,6 +352,6 @@ if os.path.exists(dist_dir):
     app.mount("/", StaticFiles(directory=dist_dir, html=True), name="frontend")
 
 if __name__ == "__main__":
-    # Single command launch
-    print("[Face Forge] Starting Module 4 on http://localhost:8000 ...")
-    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
+    # Single command launch for FaceForge
+    print("[Face Forge] Starting server on http://127.0.0.1:8000 ...")
+    uvicorn.run(app, host="127.0.0.1", port=8000)

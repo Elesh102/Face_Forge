@@ -1,6 +1,16 @@
 """
-Face Forge - Module 4 Controller (controller.py)
-Orchestrates the detection pipeline across adapters, configuration, and storage.
+=============================================================================
+FaceForge - Module 4: Pipeline Controller (controller.py)
+Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+
+Responsibilities of Member 4:
+- Central pipeline controller coordinating M1 (Preprocess), M2 (Face Detection),
+  and M3 (Emotion Classification)
+- Image annotation with bounding boxes, confidence badges, and labels
+- Configuration management (config.yaml) with input sanitization and safety clamping
+- Live webcam frame processing and temporal video frame sampling
+=============================================================================
 """
 
 from typing import Dict, Any, List, Tuple, Optional
@@ -46,9 +56,45 @@ def load_config() -> Dict[str, Any]:
         return DEFAULT_CONFIG.copy()
 
 def save_config(new_config: Dict[str, Any]) -> Dict[str, Any]:
-    """Updates config.yaml with new values."""
+    """
+    Updates config.yaml with sanitized values.
+    Enforces strict type checks and value clamping to prevent application stalls.
+    """
     current = load_config()
-    current.update(new_config)
+
+    # Validated sanitization
+    if "demo_mode" in new_config:
+        current["demo_mode"] = bool(new_config["demo_mode"])
+    if "use_module1" in new_config:
+        current["use_module1"] = bool(new_config["use_module1"])
+    if "use_module2" in new_config:
+        current["use_module2"] = bool(new_config["use_module2"])
+    if "use_module3" in new_config:
+        current["use_module3"] = bool(new_config["use_module3"])
+
+    if "confidence_threshold" in new_config:
+        try:
+            val = float(new_config["confidence_threshold"])
+            # Clamp between 0.05 (5%) and 0.99 (99%)
+            current["confidence_threshold"] = round(max(0.05, min(0.99, val)), 2)
+        except (ValueError, TypeError):
+            pass
+
+    if "video_sampling_step" in new_config:
+        try:
+            step = int(new_config["video_sampling_step"])
+            # Clamp between 1 frame and 120 frames
+            current["video_sampling_step"] = max(1, min(120, step))
+        except (ValueError, TypeError):
+            pass
+
+    if "camera_index" in new_config:
+        try:
+            c_idx = int(new_config["camera_index"])
+            current["camera_index"] = max(0, min(10, c_idx))
+        except (ValueError, TypeError):
+            pass
+
     try:
         with open(CONFIG_PATH, "w", encoding="utf-8") as f:
             yaml.safe_dump(current, f, default_flow_style=False)
@@ -57,18 +103,32 @@ def save_config(new_config: Dict[str, Any]) -> Dict[str, Any]:
     return current
 
 def get_active_mode_badge() -> Dict[str, str]:
-    """Returns the honesty badge label and style based on demo_mode flag."""
+    """Returns the mode badge label and style based on active modules."""
     cfg = load_config()
-    if cfg.get("demo_mode", True):
+    active_mods = []
+    if cfg.get("use_module1", False):
+        active_mods.append("M1: Preprocessing")
+    if cfg.get("use_module2", False):
+        active_mods.append("M2: Face Detection")
+    if cfg.get("use_module3", False):
+        active_mods.append("M3: Emotion Model")
+
+    if active_mods:
         return {
-            "text": "Demo data",
-            "type": "demo",
-            "desc": "Operating with simulated mock adapters. Teammate modules pending."
+            "text": f"Live: {', '.join(active_mods)}",
+            "type": "live",
+            "desc": f"Running with live teammate modules: {', '.join(active_mods)}."
+        }
+    if not cfg.get("demo_mode", True):
+        return {
+            "text": "Live module",
+            "type": "live",
+            "desc": "Operating with live plugged-in detection & classification modules."
         }
     return {
-        "text": "Live module",
-        "type": "live",
-        "desc": "Operating with live plugged-in detection & classification modules."
+        "text": "Demo data",
+        "type": "demo",
+        "desc": "Operating with simulated mock adapters. Teammate modules pending."
     }
 
 def annotate_image(img: np.ndarray, records: List[Dict[str, Any]]) -> np.ndarray:
@@ -156,10 +216,10 @@ def process_single_image(
     5. Annotated visual generation
     """
     cfg = load_config()
-    data_source = "demo" if cfg.get("demo_mode", True) else "live"
-    use_m1 = cfg.get("use_module1", False) and not cfg.get("demo_mode", True)
-    use_m2 = cfg.get("use_module2", False) and not cfg.get("demo_mode", True)
-    use_m3 = cfg.get("use_module3", False) and not cfg.get("demo_mode", True)
+    use_m1 = bool(cfg.get("use_module1", True))
+    use_m2 = bool(cfg.get("use_module2", True))
+    use_m3 = bool(cfg.get("use_module3", True))
+    data_source = "demo" if cfg.get("demo_mode", False) else "live"
     threshold = float(cfg.get("confidence_threshold", 0.50))
 
     img = decode_image_bytes(image_bytes)
@@ -172,9 +232,17 @@ def process_single_image(
     # Step 2: Detect faces
     boxes = adapter_face.detect_faces(preprocessed_img, use_real=use_m2)
     if not boxes:
-        # Fallback centered box if none found
-        h, w = preprocessed_img.shape[:2]
-        boxes = [(int(w * 0.25), int(h * 0.2), int(w * 0.5), int(h * 0.5))]
+        # Return clean result indicating 0 faces detected without fake box fabrication
+        annotated_b64 = encode_image_base64(preprocessed_img)
+        return {
+            "status": "success",
+            "file_name": file_name,
+            "data_source": data_source,
+            "badge": get_active_mode_badge(),
+            "total_faces": 0,
+            "records": [],
+            "annotated_image_base64": f"data:image/jpeg;base64,{annotated_b64}"
+        }
 
     records = []
     for face_idx, box in enumerate(boxes):
@@ -222,10 +290,10 @@ def process_webcam_frame(
     Processes a live webcam frame in real time.
     """
     cfg = load_config()
-    data_source = "demo" if cfg.get("demo_mode", True) else "live"
-    use_m1 = cfg.get("use_module1", False) and not cfg.get("demo_mode", True)
-    use_m2 = cfg.get("use_module2", False) and not cfg.get("demo_mode", True)
-    use_m3 = cfg.get("use_module3", False) and not cfg.get("demo_mode", True)
+    use_m1 = bool(cfg.get("use_module1", True))
+    use_m2 = bool(cfg.get("use_module2", True))
+    use_m3 = bool(cfg.get("use_module3", True))
+    data_source = "demo" if cfg.get("demo_mode", False) else "live"
     threshold = float(cfg.get("confidence_threshold", 0.50))
 
     img = decode_image_bytes(frame_bytes)
@@ -277,18 +345,30 @@ def process_video_file(
     Processes video frames sampled at regular intervals.
     """
     cfg = load_config()
-    data_source = "demo" if cfg.get("demo_mode", True) else "live"
-    use_m1 = cfg.get("use_module1", False) and not cfg.get("demo_mode", True)
-    use_m2 = cfg.get("use_module2", False) and not cfg.get("demo_mode", True)
-    use_m3 = cfg.get("use_module3", False) and not cfg.get("demo_mode", True)
+    use_m1 = bool(cfg.get("use_module1", True))
+    use_m2 = bool(cfg.get("use_module2", True))
+    use_m3 = bool(cfg.get("use_module3", True))
+    data_source = "demo" if cfg.get("demo_mode", False) else "live"
     threshold = float(cfg.get("confidence_threshold", 0.50))
     step = sampling_step or int(cfg.get("video_sampling_step", 10))
 
     cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        cap.release()
+        raise ValueError("Could not open video file. Format may be unsupported or file is corrupted.")
+
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
-    duration_sec = round(total_frames / fps, 1) if fps > 0 else 0
+    if total_frames <= 0 or fps <= 0:
+        cap.release()
+        raise ValueError("Video file contains 0 decodable frames.")
+
+    duration_sec = round(total_frames / fps, 1)
     cap.release()
+
+    # Dynamic step adjustment: ensure max ~80 frames to prevent multi-minute blocking
+    if total_frames // step > 80:
+        step = max(step, total_frames // 80)
 
     sampled_records = []
     preview_frames = []

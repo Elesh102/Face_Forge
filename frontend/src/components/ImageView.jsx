@@ -1,3 +1,11 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Single Image Inference View (ImageView.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ * =============================================================================
+ */
+
 import React, { useState, useRef } from 'react';
 import { Upload, Image as ImageIcon, AlertCircle } from 'lucide-react';
 
@@ -95,7 +103,7 @@ export default function ImageView({ onResultSaved }) {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload size={36} color="var(--primary)" style={{ margin: '0 auto 12px auto' }} />
-              <div style={{ fontWeight: 600, color: '#fff', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                 Select an image file
               </div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
@@ -104,7 +112,7 @@ export default function ImageView({ onResultSaved }) {
             </div>
           ) : (
             <div>
-              <div style={{ textAlign: 'center', background: '#070b14', borderRadius: '6px', overflow: 'hidden', marginBottom: '14px', border: '1px solid var(--border-color)' }}>
+              <div style={{ textAlign: 'center', background: '#f8fafc', borderRadius: '6px', overflow: 'hidden', marginBottom: '14px', border: '1px solid var(--border-subtle)', padding: '10px' }}>
                 <img 
                   src={previewUrl} 
                   alt="Preview" 
@@ -164,7 +172,7 @@ export default function ImageView({ onResultSaved }) {
                   {resultData.records.map((rec, i) => (
                     <tr key={i}>
                       <td>#{rec.face_index !== undefined ? rec.face_index + 1 : i + 1}</td>
-                      <td style={{ textTransform: 'capitalize', fontWeight: 600, color: '#fff' }}>
+                      <td style={{ textTransform: 'capitalize', fontWeight: 600, color: 'var(--text-primary)' }}>
                         {rec.dominant_emotion || rec.emotion || 'Neutral'}
                       </td>
                       <td>{Math.round((rec.confidence || 0) * 100)}%</td>

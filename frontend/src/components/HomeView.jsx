@@ -1,3 +1,11 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Home Dashboard Component (HomeView.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ * =============================================================================
+ */
+
 import React from 'react';
 import { 
   ArrowRight, 
@@ -42,10 +50,10 @@ export default function HomeView({ setCurrentView }) {
           onClick={() => setCurrentView('image')}
         >
           <div>
-            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(99, 102, 241, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--primary)' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--primary)' }}>
               <ImageIcon size={26} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '8px' }}>Image Detection</h3>
+            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>Image Detection</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5', marginBottom: '20px' }}>
               Upload JPG or PNG photos to detect faces, render bounding boxes, and display detected expressions with confidence scores.
             </p>
@@ -63,10 +71,10 @@ export default function HomeView({ setCurrentView }) {
           onClick={() => setCurrentView('video')}
         >
           <div>
-            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(6, 182, 212, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--cyan)' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: '#f0f9ff', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--cyan)' }}>
               <Video size={26} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '8px' }}>Video Detection</h3>
+            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>Video Detection</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5', marginBottom: '20px' }}>
               Upload MP4 or AVI video clips. Configure frame sampling step to analyze detected expressions across frames.
             </p>
@@ -84,15 +92,15 @@ export default function HomeView({ setCurrentView }) {
           onClick={() => setCurrentView('webcam')}
         >
           <div>
-            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--emerald)' }}>
+            <div style={{ width: '48px', height: '48px', borderRadius: '10px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '16px', color: 'var(--emerald)' }}>
               <Camera size={26} />
             </div>
-            <h3 style={{ fontSize: '1.2rem', color: '#fff', marginBottom: '8px' }}>Webcam Detection</h3>
+            <h3 style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '8px' }}>Webcam Detection</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', lineHeight: '1.5', marginBottom: '20px' }}>
               Connect your browser camera for live facial detection and continuous detected expression classification.
             </p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#34d399', fontWeight: 600, fontSize: '0.88rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--emerald)', fontWeight: 600, fontSize: '0.88rem' }}>
             <span>Open Webcam Detection</span>
             <ArrowRight size={16} />
           </div>
@@ -103,12 +111,12 @@ export default function HomeView({ setCurrentView }) {
       <div className="grid-2">
         <div 
           className="stat-box" 
-          style={{ cursor: 'pointer', background: 'rgba(15, 23, 42, 0.6)' }}
+          style={{ cursor: 'pointer' }}
           onClick={() => setCurrentView('results')}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <Database size={20} color="var(--primary)" />
-            <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Results History</strong>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>Results History</strong>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
             View logged predictions in results.csv, filter by source or emotion, and download CSV.
@@ -117,12 +125,12 @@ export default function HomeView({ setCurrentView }) {
 
         <div 
           className="stat-box" 
-          style={{ cursor: 'pointer', background: 'rgba(15, 23, 42, 0.6)' }}
+          style={{ cursor: 'pointer' }}
           onClick={() => setCurrentView('analytics')}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <BarChart3 size={20} color="var(--cyan)" />
-            <strong style={{ color: '#fff', fontSize: '0.95rem' }}>Analytics & Charts</strong>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.95rem' }}>Analytics & Charts</strong>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
             Explore expression distribution, average confidence, and detection timelines.

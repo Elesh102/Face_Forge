@@ -1,3 +1,15 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Settings & Feature Flags Panel (SettingsView.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ *
+ * Responsibilities of Member 4:
+ * - Feature flag controls for plugging/unplugging Module 1, 2, and 3
+ * - Tuning confidence threshold and video sampling frequency
+ * =============================================================================
+ */
+
 import React, { useState } from 'react';
 import { Sliders, Save, CheckCircle2 } from 'lucide-react';
 
@@ -66,58 +78,58 @@ export default function SettingsView({ config, onConfigUpdated }) {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {/* Demo Mode */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}>
               <div>
-                <strong style={{ color: '#fff' }}>Demo Mode</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>Demo Mode</strong>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Use mock adapter data</div>
               </div>
               <input 
                 type="checkbox" 
                 checked={formData.demo_mode}
                 onChange={() => handleToggle('demo_mode')}
-                style={{ width: '18px', height: '18px' }}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
               />
             </div>
 
             {/* Module 1 Switch */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}>
               <div>
-                <strong style={{ color: '#fff' }}>Module 1 (Preprocessing)</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>Module 1 (Preprocessing)</strong>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Enable Module 1 adapter</div>
               </div>
               <input 
                 type="checkbox" 
                 checked={formData.use_module1}
                 onChange={() => handleToggle('use_module1')}
-                style={{ width: '18px', height: '18px' }}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
               />
             </div>
 
             {/* Module 2 Switch */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}>
               <div>
-                <strong style={{ color: '#fff' }}>Module 2 (Face Detection)</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>Module 2 (Face Detection)</strong>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Enable Module 2 adapter</div>
               </div>
               <input 
                 type="checkbox" 
                 checked={formData.use_module2}
                 onChange={() => handleToggle('use_module2')}
-                style={{ width: '18px', height: '18px' }}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
               />
             </div>
 
             {/* Module 3 Switch */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 16px', background: '#f8fafc', border: '1px solid var(--border-subtle)', borderRadius: '8px' }}>
               <div>
-                <strong style={{ color: '#fff' }}>Module 3 (Emotion Model)</strong>
+                <strong style={{ color: 'var(--text-primary)' }}>Module 3 (Emotion Model)</strong>
                 <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Enable Module 3 adapter</div>
               </div>
               <input 
                 type="checkbox" 
                 checked={formData.use_module3}
                 onChange={() => handleToggle('use_module3')}
-                style={{ width: '18px', height: '18px' }}
+                style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
               />
             </div>
 

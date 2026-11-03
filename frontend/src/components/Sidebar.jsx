@@ -1,3 +1,11 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Sidebar Navigation Component (Sidebar.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ * =============================================================================
+ */
+
 import React from 'react';
 import { 
   Home as HomeIcon, 
@@ -6,11 +14,12 @@ import {
   Camera, 
   Database, 
   BarChart3, 
+  Activity,
+  Sliders,
   Smile
 } from 'lucide-react';
 
 export default function Sidebar({ currentView, setCurrentView }) {
-  // Settings and Model Evaluation hidden for now as requested
   const navItems = [
     { id: 'home', label: 'Home', icon: HomeIcon },
     { id: 'image', label: 'Image Detection', icon: ImageIcon },
@@ -18,6 +27,8 @@ export default function Sidebar({ currentView, setCurrentView }) {
     { id: 'webcam', label: 'Webcam Detection', icon: Camera },
     { id: 'results', label: 'Results', icon: Database },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'evaluation', label: 'Model Evaluation', icon: Activity },
+    { id: 'settings', label: 'Settings', icon: Sliders },
   ];
 
   return (
@@ -25,7 +36,7 @@ export default function Sidebar({ currentView, setCurrentView }) {
       {/* Brand Header */}
       <div className="brand-section">
         <div className="brand-title">
-          <Smile size={24} color="#38bdf8" />
+          <Smile size={24} color="#4f46e5" />
           <span>Face Forge</span>
         </div>
         <div className="brand-tag">
@@ -49,19 +60,12 @@ export default function Sidebar({ currentView, setCurrentView }) {
               className={`nav-link ${isActive ? 'active' : ''}`}
               onClick={() => setCurrentView(item.id)}
             >
-              <Icon size={18} color={isActive ? '#38bdf8' : '#94a3b8'} />
+              <Icon size={18} color={isActive ? '#4f46e5' : '#64748b'} />
               <span style={{ flex: 1 }}>{item.label}</span>
             </button>
           );
         })}
       </nav>
-
-      {/* Clean Status Footer */}
-      <div className="sidebar-telemetry">
-        <div style={{ color: 'var(--text-muted)', fontSize: '0.78rem', textAlign: 'center', padding: '8px 0' }}>
-          Face Forge &copy; 2026
-        </div>
-      </div>
     </aside>
   );
 }

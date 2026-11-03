@@ -1,3 +1,11 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Video Processing View (VideoView.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ * =============================================================================
+ */
+
 import React, { useState, useRef } from 'react';
 import { Video, Upload, Play, Square, AlertCircle } from 'lucide-react';
 
@@ -116,7 +124,7 @@ export default function VideoView({ config, onResultSaved }) {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload size={36} color="var(--primary)" style={{ margin: '0 auto 12px auto' }} />
-              <div style={{ fontWeight: 600, color: '#fff', marginBottom: '4px' }}>
+              <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '4px' }}>
                 Select an MP4 or AVI video
               </div>
               <div style={{ color: 'var(--text-muted)', fontSize: '0.82rem' }}>
@@ -125,7 +133,7 @@ export default function VideoView({ config, onResultSaved }) {
             </div>
           ) : (
             <div>
-              <div style={{ borderRadius: '6px', overflow: 'hidden', background: '#000', marginBottom: '14px', border: '1px solid var(--border-color)' }}>
+              <div style={{ borderRadius: '6px', overflow: 'hidden', background: '#0f172a', marginBottom: '14px', border: '1px solid var(--border-subtle)' }}>
                 <video 
                   src={videoPreviewUrl} 
                   controls 
@@ -167,7 +175,7 @@ export default function VideoView({ config, onResultSaved }) {
                     <Square size={16} /> Stop Processing
                   </button>
                 ) : (
-                  <button className="btn btn-primary" onClick={runVideoDetection}>
+                  <button className="btn btn-success" onClick={runVideoDetection}>
                     <Play size={16} /> Start Detection
                   </button>
                 )}
@@ -216,7 +224,7 @@ export default function VideoView({ config, onResultSaved }) {
                   {resultData.records.map((rec, i) => (
                     <tr key={i}>
                       <td>#{rec.frame_number !== undefined ? rec.frame_number : i * samplingStep}</td>
-                      <td style={{ textTransform: 'capitalize', fontWeight: 600, color: '#fff' }}>
+                      <td style={{ textTransform: 'capitalize', fontWeight: 600, color: 'var(--text-primary)' }}>
                         {rec.emotion}
                       </td>
                       <td>{Math.round((rec.confidence || 0) * 100)}%</td>

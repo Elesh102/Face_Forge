@@ -1,3 +1,16 @@
+/**
+ * =============================================================================
+ * FaceForge - Module 4: Results & History Log Table (ResultsView.jsx)
+ * Contributed by: Member 4 (System Integration, UI, Storage & Analytics)
+ * Group G2 (IT) - B.Tech Final Year Project - SKIT Jaipur
+ *
+ * Responsibilities of Member 4:
+ * - Render logged inference predictions from results.csv
+ * - Filtering by source (Image, Video, Webcam), emotion, and data mode
+ * - CSV archive download and Admin PIN (1234) authenticated data reset
+ * =============================================================================
+ */
+
 import React, { useState, useEffect } from 'react';
 import { 
   Database, 
@@ -25,6 +38,8 @@ export default function ResultsView({ badge, triggerToast }) {
   const [emotionFilter, setEmotionFilter] = useState('all');
   const [dataSourceFilter, setDataSourceFilter] = useState('all');
   const [showClearModal, setShowClearModal] = useState(false);
+  const [adminPin, setAdminPin] = useState('');
+  const [pinError, setPinError] = useState('');
 
   const fetchResults = async () => {
     setLoading(true);
@@ -57,15 +72,21 @@ export default function ResultsView({ badge, triggerToast }) {
   };
 
   const handleClearResults = async () => {
+    setPinError('');
     try {
-      const res = await fetch('/api/results/clear', { method: 'DELETE' });
+      const res = await fetch(`/api/results/clear?pin=${encodeURIComponent(adminPin)}`, { method: 'DELETE' });
       if (res.ok) {
         setShowClearModal(false);
+        setAdminPin('');
+        setPinError('');
         fetchResults();
         triggerToast?.('Database Cleared', 'Historical inference logs reset successfully.');
+      } else {
+        const err = await res.json();
+        setPinError(err.detail || 'Invalid Admin PIN. Authentication required.');
       }
     } catch (e) {
-      console.error('Error clearing:', e);
+      setPinError('Connection error while contacting server.');
     }
   };
 
@@ -75,11 +96,11 @@ export default function ResultsView({ badge, triggerToast }) {
       <div className="view-header">
         <div>
           <h1>
-            <Database size={28} color="var(--primary)" style={{ filter: 'drop-shadow(0 0 10px #6366f1)' }} />
-            <span>Neural Inference Records & Storage</span>
+            <Database size={28} color="var(--primary)" />
+            <span>Detection Results & History</span>
           </h1>
           <p>
-            Append-only telemetry ledger indexing all model detections, facial coordinates, and timestamped confidence scores.
+            Logged emotion predictions saved in results.csv. Filter records by source, emotion, or data mode.
           </p>
         </div>
 
@@ -94,7 +115,7 @@ export default function ResultsView({ badge, triggerToast }) {
           </button>
 
           <button 
-            className="btn btn-primary" 
+            className="btn btn-cyan" 
             onClick={handleDownloadCSV}
           >
             <Download size={14} />
@@ -111,18 +132,18 @@ export default function ResultsView({ badge, triggerToast }) {
         </div>
       </div>
 
-      {/* Filter Dropout Bar */}
+      {/* Filter Bar */}
       <div className="card" style={{ padding: '16px 20px', border: '1px solid rgba(99, 102, 241, 0.25)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Filter size={16} color="var(--primary)" />
-            <strong style={{ color: '#fff', fontSize: '0.9rem' }}>Query Filters & Dropouts</strong>
+            <strong style={{ color: 'var(--text-primary)', fontSize: '0.9rem' }}>Filter Results</strong>
           </div>
-          <span className="card-badge">{totalCount} Indexed Entries</span>
+          <span className="card-badge">{totalCount} Total Records</span>
         </div>
 
         <div className="grid-3">
-          {/* Dropout 1: Source */}
+          {/* Filter 1: Source */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Input Source</label>
             <div className="select-wrapper">
@@ -131,15 +152,15 @@ export default function ResultsView({ badge, triggerToast }) {
                 value={sourceFilter}
                 onChange={(e) => setSourceFilter(e.target.value)}
               >
-                <option value="all">All Sources (Image, Video, Cam)</option>
-                <option value="image">Still Image Analysis</option>
-                <option value="video">Video Stream Frames</option>
-                <option value="webcam">Live Neural Cam</option>
+                <option value="all">All Sources (Image, Video, Webcam)</option>
+                <option value="image">Still Image</option>
+                <option value="video">Video File</option>
+                <option value="webcam">Live Webcam</option>
               </select>
             </div>
           </div>
 
-          {/* Dropout 2: Emotion Filter */}
+          {/* Filter 2: Emotion Filter */}
           <div className="form-group" style={{ marginBottom: 0 }}>
             <label className="form-label">Emotion Category</label>
             <div className="select-wrapper">
@@ -160,18 +181,18 @@ export default function ResultsView({ badge, triggerToast }) {
             </div>
           </div>
 
-          {/* Dropout 3: Data Tier */}
+          {/* Filter 3: Data Source Mode */}
           <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Inference Tier</label>
+            <label className="form-label">Data Mode</label>
             <div className="select-wrapper">
               <select 
                 className="form-control"
                 value={dataSourceFilter}
                 onChange={(e) => setDataSourceFilter(e.target.value)}
               >
-                <option value="all">All Inferences</option>
-                <option value="live">Live Pipeline Only</option>
-                <option value="demo">Adapter Test Mocks Only</option>
+                <option value="all">All Records</option>
+                <option value="live">Live Predictions Only</option>
+                <option value="demo">Demo Data Only</option>
               </select>
             </div>
           </div>
@@ -230,15 +251,31 @@ export default function ResultsView({ badge, triggerToast }) {
 
       {/* Confirmation Modal */}
       {showClearModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="card" style={{ maxWidth: '420px', width: '90%', margin: 0, border: '1px solid rgba(244, 63, 94, 0.4)' }}>
-            <h3 style={{ color: '#fff', fontSize: '1.2rem', marginBottom: '10px' }}>Reset History?</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', marginBottom: '20px' }}>
-              This will clear all rows from <code>results/results.csv</code>. This action cannot be undone.
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="card" style={{ maxWidth: '420px', width: '90%', margin: 0, border: '1px solid #fecdd3', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)' }}>
+            <h3 style={{ color: 'var(--text-primary)', fontSize: '1.2rem', marginBottom: '10px' }}>Security Protected: Reset History?</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.86rem', marginBottom: '16px' }}>
+              This will clear all rows from <code>results/results.csv</code>. To prevent unauthorized data deletion, enter the Admin PIN (default: <code>1234</code>):
             </p>
+            <div style={{ marginBottom: '16px' }}>
+              <input 
+                type="password"
+                placeholder="Enter Admin PIN (e.g. 1234)"
+                value={adminPin}
+                onChange={(e) => setAdminPin(e.target.value)}
+                className="form-control"
+                style={{ width: '100%' }}
+                autoFocus
+              />
+              {pinError && (
+                <div style={{ color: '#ef4444', fontSize: '0.8rem', marginTop: '6px', fontWeight: 500 }}>
+                  {pinError}
+                </div>
+              )}
+            </div>
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <button className="btn btn-secondary" onClick={() => setShowClearModal(false)}>Cancel</button>
-              <button className="btn btn-danger" onClick={handleClearResults}>Confirm Clear</button>
+              <button className="btn btn-secondary" onClick={() => { setShowClearModal(false); setAdminPin(''); setPinError(''); }}>Cancel</button>
+              <button className="btn btn-danger" onClick={handleClearResults}>Confirm & Clear</button>
             </div>
           </div>
         </div>
