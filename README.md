@@ -49,27 +49,69 @@ The system classifies faces into the 7 canonical emotion classes standardized on
 
 ---
 
-## 🚀 Quick Start (Single Command)
+## 💻 Team Member Guide: Setup & Run in VS Code
 
-### Prerequisites
-- Python 3.10 / 3.11 / 3.12
-- Web Browser (Chrome, Edge, Firefox)
+Follow these step-by-step instructions to open and run FaceForge on your local machine:
 
-### Option 1: Double-Click Launcher (Windows)
-Double-click `run_faceforge.bat` in the project root. It will:
-1. Activate the local virtual environment.
-2. Start the FastAPI server on `http://127.0.0.1:8000`.
-3. Open your browser to the FaceForge dashboard.
+### Step 1: Open Project in VS Code
+1. Open **Visual Studio Code**.
+2. Click **File** ➔ **Open Folder...** (or press `Ctrl + K, Ctrl + O`).
+3. Select the `Face_Forge` project root folder (the folder containing `app.py`).
+4. Open the integrated terminal in VS Code: **Terminal** ➔ **New Terminal** (`Ctrl + ` ` `).
 
-### Option 2: Command Line
+### Step 2: Create a Python 3.12 Virtual Environment
+> [!IMPORTANT]
+> **Use Python 3.12.** TensorFlow currently does not provide compatible wheels for Python 3.14.
+
+In the VS Code terminal, run:
 ```powershell
-# 1. Install dependencies
-pip install -r requirements.txt
+# Create virtual environment named .venv using Python 3.12
+py -3.12 -m venv .venv
 
-# 2. Run the application
-python app.py
+# Activate the virtual environment
+# Windows PowerShell:
+.\.venv\Scripts\Activate.ps1
+
+# If PowerShell shows an Execution_Policy error, run this first:
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+
+# Windows Command Prompt (CMD):
+.\.venv\Scripts\activate.bat
 ```
-Open **`http://127.0.0.1:8000`** in your browser.
+
+### Step 3: Select the Python Interpreter in VS Code
+1. Press `Ctrl + Shift + P` to open the Command Palette.
+2. Type **`Python: Select Interpreter`** and press `Enter`.
+3. Select the interpreter pointing to your newly created virtual environment:
+   `Python 3.12.x ('.venv': venv) .\.venv\Scripts\python.exe`.
+
+### Step 4: Install Dependencies
+```powershell
+pip install -r requirements.txt
+```
+> [!NOTE]
+> `requirements.txt` is pre-configured with strictly compatible versions (`opencv-contrib-python==4.14.0.94`, `tensorflow==2.21.0`, `fer==25.10.3`, `fastapi`, `uvicorn`, etc.). **Do not manually install `opencv-python`**, as it conflicts with `opencv-contrib-python`.
+
+### Step 5: Run the Project
+Choose either option:
+
+- **Option A (Terminal Command):**
+  ```powershell
+  python app.py
+  ```
+- **Option B (One-Click Batch Launcher):**
+  Double-click `run_faceforge.bat` in the project root.
+
+Now open your web browser (Chrome, Edge, or Firefox) and visit:
+👉 **`http://127.0.0.1:8000`**
+
+### Step 6: Verify the Setup
+Run the automated verification script to confirm everything is running properly:
+```powershell
+python test_system_verification.py
+```
+*(All 8 tests should output `PASS` with 0 errors).*
 
 ---
 

@@ -7,7 +7,7 @@
 :: Automatically launches the Python FastAPI server and opens the browser
 :: =============================================================================
 title FaceForge Application Server (Group G2 - Final Year Project)
-cd /d "C:\Users\web\OneDrive\Desktop\FaceForge"
+cd /d "%~dp0"
 echo ======================================================================
 echo    FaceForge - Facial Emotion Recognition System
 echo    B.Tech Final Year Project - Group G2 (IT) - SKIT Jaipur
